@@ -2,8 +2,8 @@ const express = require("express");
 const { S3 } = require("aws-sdk");
 
 const s3 = new S3({
-  accessKeyId: "AKIAW3MEDQL66SIV25XA",
-  secretAccessKey: "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",
+  accessKeyId: "",
+  secretAccessKey: "",
   Bucket: "vercel-output-bucket",
 });
 
