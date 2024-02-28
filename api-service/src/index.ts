@@ -1,16 +1,24 @@
-const express = require("express");
-const { generateSlug } = require("random-word-slugs");
-const { ECSClient, RunTaskCommand } = require("@aws-sdk/client-ecs");
+import express from "express";
+import "dotenv/config";
+//@ts-ignore
+import { UniqueString } from "unique-string-generator";
+import { ECSClient, RunTaskCommand } from "@aws-sdk/client-ecs";
+import userRouter from "./routes/userRoutes";
+import authMiddleware from "./middlewares/authMiddleware";
+import { PrismaClient } from "@prisma/client";
 
 const app = express();
 app.use(express.json());
+app.use("/api/user", userRouter);
+
+const prisma: PrismaClient = new PrismaClient();
 const PORT = process.env.PORT || 8000;
 
 const ecsClient = new ECSClient({
   region: "eu-north-1",
   credentials: {
-    accessKeyId: "AKIAW3MEDQL66SIV25XA",
-    secretAccessKey: "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",
+    accessKeyId: "",
+    secretAccessKey: "",
   },
 });
 
@@ -20,9 +28,9 @@ const ecsCofig = {
   TASK: "arn:aws:ecs:eu-north-1:471112844029:task-definition/vercel-code-builder-task",
 };
 
-app.post("/project", async (req, res) => {
+app.post("/project", authMiddleware, async (req, res) => {
   const { repoUrl } = req.body;
-  const projectId = generateSlug();
+  const projectId = UniqueString();
 
   // Start the container
   const command = new RunTaskCommand({
@@ -60,9 +68,30 @@ app.post("/project", async (req, res) => {
     },
   });
 
-  await ecsClient.send(command);
+  const deployment = await prisma.deployment.create({
+    data: {
+      userId: req.body.userId,
+      projectId,
+    },
+  });
 
-  return res.json({
+  try {
+    await ecsClient.send(command);
+  } catch (e) {
+    // removing the deployment entry if we fail to send the biuld request
+    await prisma.deployment.delete({
+      where: {
+        id: deployment.id,
+      },
+    });
+
+    return res.status(500).json({
+      status: "failed",
+      error: "Failed to deploy your project",
+    });
+  }
+
+  return res.status(201).json({
     status: "queued",
     data: { projectId, url: `http://${projectId}.localhost:8000` },
   });
