@@ -9,8 +9,8 @@ const PORT = process.env.PORT || 8000;
 const ecsClient = new ECSClient({
   region: "eu-north-1",
   credentials: {
-    accessKeyId: "AKIAW3MEDQL66SIV25XA",
-    secretAccessKey: "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",
+    accessKeyId: "",
+    secretAccessKey: "",
   },
 });
 
