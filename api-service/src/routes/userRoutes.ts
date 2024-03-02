@@ -56,6 +56,7 @@ router.post("/signup", async (req: Request, res: Response) => {
 });
 
 router.post("/signin", async (req: Request, res: Response) => {
+  console.log("INFO: inside signin method for req: ", req.body);
   const user = {
     username: req.body.username,
     password: req.body.password,

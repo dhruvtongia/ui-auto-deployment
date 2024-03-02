@@ -1,14 +1,17 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const signinUser = async () => {
+  const signinUser = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
     const response = await fetch("http://localhost:8000/api/user/signin", {
       method: "POST",
+      mode: "cors",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
@@ -20,11 +23,13 @@ const Login = () => {
 
     const data = await response.json();
 
+    console.log("data", data);
     if (response.status === 200) {
       Cookies.set("vercel-token", data.token, {
         expires: 1,
         secure: true,
       });
+      navigate("/");
     }
   };
   return (
@@ -36,7 +41,7 @@ const Login = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" action="#" method="POST">
+        <form className="space-y-6" onSubmit={signinUser} method="POST">
           <div>
             <label
               htmlFor="email"
@@ -85,7 +90,6 @@ const Login = () => {
 
           <div>
             <button
-              onClick={signinUser}
               type="submit"
               className="flex w-full content-center justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >

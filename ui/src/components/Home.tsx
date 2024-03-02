@@ -1,14 +1,19 @@
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+
 const Home = () => {
+  const navigate = useNavigate();
   const uploadRepo = async () => {
-    const response = await fetch("http://localhost:8000/project", {
+    if (!Cookies.get("vercel-token")) {
+      navigate("/login");
+    }
+    await fetch("http://localhost:8000/project", {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
         // "Authorization": "Bearer my-token",
       },
     });
-
-    const data = await response.json();
   };
   return (
     <div>

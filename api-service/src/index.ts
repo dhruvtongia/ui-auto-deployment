@@ -6,10 +6,14 @@ import { ECSClient, RunTaskCommand } from "@aws-sdk/client-ecs";
 import userRouter from "./routes/userRoutes";
 import authMiddleware from "./middlewares/authMiddleware";
 import { PrismaClient } from "@prisma/client";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use("/api/user", userRouter);
+
+// app.options("*", cors(corsOptions));
 
 const prisma: PrismaClient = new PrismaClient();
 const PORT = process.env.PORT || 8000;
