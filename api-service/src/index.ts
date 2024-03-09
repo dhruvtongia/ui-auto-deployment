@@ -20,11 +20,14 @@ const PORT = process.env.PORT || 8000;
 const redis = new Redis(
   "rediss://default:AVNS_YTIjVViZIN3Yr5XO7DU@redis-dhruv-vercel-clone-redis.a.aivencloud.com:28074"
 );
+const accessKeyId: string = process.env.ACCESS_KEY_ID as string;
+const secretAccessKey: string = process.env.SECRET_ACCESS_KEY as string;
+
 const ecsClient = new ECSClient({
   region: "eu-north-1",
   credentials: {
-    accessKeyId: "AKIAW3MEDQL6WFTCH7O7",
-    secretAccessKey: "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",
+    accessKeyId: accessKeyId,
+    secretAccessKey: secretAccessKey,
   },
 });
 
