@@ -1,20 +1,24 @@
 const express = require("express");
 const { S3 } = require("aws-sdk");
+require("dotenv").config();
 
 const s3 = new S3({
-  accessKeyId: "",
-  secretAccessKey: "",
+  accessKeyId: process.env.ACCESS_KEY_ID,
+  secretAccessKey: process.env.SECRET_ACCESS_KEY,
   Bucket: "vercel-output-bucket",
 });
 
 const app = express();
 
 app.get("/*", async (req, res) => {
-  // id.100xdevs.com
   const host = req.hostname;
 
   const id = host.split(".")[0];
-  const filePath = req.path;
+  let filePath = req.path;
+  if (filePath === "/") {
+    filePath += "index.html";
+  }
+  console.log("fp: ", filePath);
 
   const contents = await s3
     .getObject({
