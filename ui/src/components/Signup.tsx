@@ -1,12 +1,13 @@
 import { useRef, useState } from "react";
 import Cookies from "js-cookie";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { API_SERVER_URI as apiServerUrl } from "../constant";
 
 const Signup = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const navigate = useNavigate();
   const messageRef = useRef<HTMLInputElement>(null!);
 
   const registerUser = async (e: { preventDefault: () => void }) => {
@@ -41,6 +42,7 @@ const Signup = () => {
         expires: 1,
         secure: true,
       });
+      navigate("/login");
     } else {
       messageRef.current.innerHTML = data.error;
 
