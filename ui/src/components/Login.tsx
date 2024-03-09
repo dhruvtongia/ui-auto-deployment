@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Cookies from "js-cookie";
 import { NavLink, useNavigate } from "react-router-dom";
+import { API_SERVER_URI as apiServerUrl } from "../constant";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const messageRef = useRef<HTMLInputElement>(null!);
 
   const signinUser = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:8000/api/user/signin", {
+    const response = await fetch(`${apiServerUrl}/api/user/signin`, {
       method: "POST",
       mode: "cors",
       headers: {
@@ -30,6 +32,11 @@ const Login = () => {
         secure: true,
       });
       navigate("/");
+    } else {
+      messageRef.current.innerHTML = data.error;
+      setTimeout(() => {
+        messageRef.current.innerHTML = "";
+      }, 2000);
     }
   };
   return (
@@ -39,8 +46,13 @@ const Login = () => {
           Sign in to your account
         </h2>
       </div>
-
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div
+          id="error-msg"
+          className="mb-3 text-red-500"
+          ref={messageRef}
+        ></div>
+
         <form className="space-y-6" onSubmit={signinUser} method="POST">
           <div>
             <label

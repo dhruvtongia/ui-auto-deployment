@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { NavLink } from "react-router-dom";
+import { API_SERVER_URI as apiServerUrl } from "../constant";
 
 const Signup = () => {
   const [username, setUsername] = useState<string>("");
@@ -21,7 +22,7 @@ const Signup = () => {
       }, 2000);
       return;
     }
-    const response = await fetch("http://localhost:8000/api/user/signup", {
+    const response = await fetch(`${apiServerUrl}/api/user/signup`, {
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
