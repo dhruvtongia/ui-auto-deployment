@@ -20,10 +20,21 @@ model User {
   password    String
   deployments Deployment[]
 }
+enum DeploymentStatus {
+PENDING
+DEPLOYED
+}
 
 model Deployment {
   id        Int @id @default(autoincrement())
-  projectId String 
+  projectId String @unique
   userId    Int
+  status    DeploymentStatus @default(PENDING)
   user      User @relation(fields: [userId],references: [id])
+}
+
+model CurrentDeploymentLimiter {
+  Id Int @id @default(autoincrement())
+  userId Int @unique
+  count Int @default(0)
 }

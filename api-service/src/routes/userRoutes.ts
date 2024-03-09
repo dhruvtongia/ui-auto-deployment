@@ -61,13 +61,6 @@ router.post("/signin", async (req: Request, res: Response) => {
     username: req.body.username,
     password: req.body.password,
   };
-  const isSuccess = userValidation.safeParse(user);
-
-  if (!isSuccess) {
-    return res
-      .status(411)
-      .json({ error: "Incorrect format for username or password" });
-  }
 
   const existingUser = await prismaClient.user.findFirst({
     where: {
