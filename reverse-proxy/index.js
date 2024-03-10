@@ -1,10 +1,12 @@
 const express = require("express");
-const { S3 } = require("aws-sdk");
+const { S3 } = require("@aws-sdk/client-s3");
 require("dotenv").config();
 
 const s3 = new S3({
-  accessKeyId: process.env.ACCESS_KEY_ID,
-  secretAccessKey: process.env.SECRET_ACCESS_KEY,
+  credentials: {
+    accessKeyId: process.env.ACCESS_KEY_ID,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+  },
   Bucket: "vercel-output-bucket",
 });
 
@@ -20,12 +22,10 @@ app.get("/*", async (req, res) => {
   }
   console.log("fp: ", filePath);
 
-  const contents = await s3
-    .getObject({
-      Bucket: "vercel-output-bucket",
-      Key: `__output/${id}${filePath}`,
-    })
-    .promise();
+  const contents = await s3.getObject({
+    Bucket: "vercel-output-bucket",
+    Key: `__output/${id}${filePath}`,
+  });
 
   const type = filePath.endsWith("html")
     ? "text/html"
@@ -37,4 +37,6 @@ app.get("/*", async (req, res) => {
   res.send(contents.Body);
 });
 
-app.listen(3001);
+app.listen(3001, () => {
+  console.log(`service listening on port: 3001`);
+});
