@@ -1,8 +1,9 @@
 const express = require("express");
-const { S3 } = require("@aws-sdk/client-s3");
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 require("dotenv").config();
 
-const s3 = new S3({
+const s3 = new S3Client({
+  region: "eu-north-1",
   credentials: {
     accessKeyId: process.env.ACCESS_KEY_ID,
     secretAccessKey: process.env.SECRET_ACCESS_KEY,
@@ -22,19 +23,24 @@ app.get("/*", async (req, res) => {
   }
   console.log("fp: ", filePath);
 
-  const contents = await s3.getObject({
+  const command = new GetObjectCommand({
     Bucket: "vercel-output-bucket",
     Key: `__output/${id}${filePath}`,
   });
-
+  const contents = await s3.send(command);
+  const str = await contents.Body.transformToString();
+  // console.log(str);
+  // console.log(contents);
   const type = filePath.endsWith("html")
     ? "text/html"
     : filePath.endsWith("css")
     ? "text/css"
+    : filePath.endsWith("svg")
+    ? "image/svg+xml"
     : "application/javascript";
   res.set("Content-Type", type);
 
-  res.send(contents.Body);
+  res.send(str);
 });
 
 app.listen(PORT, () => {
