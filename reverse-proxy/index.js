@@ -11,7 +11,7 @@ const s3 = new S3({
 });
 
 const app = express();
-
+const PORT = process.env.PORT || 3000;
 app.get("/*", async (req, res) => {
   const host = req.hostname;
 
@@ -37,6 +37,6 @@ app.get("/*", async (req, res) => {
   res.send(contents.Body);
 });
 
-app.listen(3001, () => {
-  console.log(`service listening on port: 3001`);
+app.listen(PORT, () => {
+  console.log(`service listening on port: ${PORT}`);
 });
