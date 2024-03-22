@@ -13,6 +13,9 @@ const s3 = new S3Client({
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.get("/api/health", (req, res) => {
+  return res.status(200).json({ msg: "all good" });
+});
 app.get("/*", async (req, res) => {
   const host = req.hostname;
 
