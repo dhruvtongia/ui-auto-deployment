@@ -9,6 +9,7 @@ const Home = () => {
   const navigate = useNavigate();
   const tokenValue = Cookies.get("vercel-token");
   const messageRef = useRef<HTMLParagraphElement>(null!);
+  const [deployed, setDeployed] = useState<boolean>(false);
 
   const uploadRepo = async () => {
     if (!tokenValue) {
@@ -39,6 +40,7 @@ const Home = () => {
         const statusData = await res.json();
         console.log("statusData: ", statusData);
         if (statusData.status === "DEPLOYED") {
+          setDeployed(true);
           clearInterval(interval);
         }
       }, 5000);
@@ -85,6 +87,38 @@ const Home = () => {
           {isdisabled ? `Deploying (${projectId})` : "Upload"}
         </button>
       </div>
+
+      {deployed && (
+        <div className="flex flex-col ml-20 mr-20 items-center border rounded-md border-slate-800 mt-10 p-">
+          <h2 className="pb-2 text-xl">
+            Your website is successfully deployed!
+          </h2>
+          <a
+            className="flex flex-row group"
+            href={`https://${projectId}.swift-deploy.dhruvtongia.tech`}
+            target="_blank"
+          >
+            <h1 className="text-xl group-hover:text-teal-300 text-slate-200">
+              Visit Website
+            </h1>
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="inline-block h-4 w-4 group-hover:text-teal-300 shrink-0 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 group-focus-visible:-translate-y-1 group-focus-visible:translate-x-1 motion-reduce:transition-none ml-1 translate-y-px"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </div>
+          </a>
+        </div>
+      )}
     </div>
   );
 };
