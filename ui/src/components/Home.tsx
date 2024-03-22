@@ -41,6 +41,7 @@ const Home = () => {
         console.log("statusData: ", statusData);
         if (statusData.status === "DEPLOYED") {
           setDeployed(true);
+          setIsDisabled(false);
           clearInterval(interval);
         }
       }, 5000);
@@ -76,6 +77,7 @@ const Home = () => {
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="John"
             required
+            disabled={isdisabled}
           />
         </div>
 
@@ -84,7 +86,11 @@ const Home = () => {
           disabled={isdisabled}
           className="block w-full mt-5 h-10 border bg-neutral-600 text-slate-50 rounded-md border-spacing-1 border-slate-50"
         >
-          {isdisabled ? `Deploying (${projectId})` : "Upload"}
+          {deployed
+            ? "Deployed"
+            : isdisabled
+            ? `Deploying (${projectId})`
+            : "Upload"}
         </button>
       </div>
 
