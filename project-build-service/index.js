@@ -14,8 +14,8 @@ const git = simpleGit().clean(simpleGit.CleanOptions.FORCE);
 const s3Client = new S3Client({
   region: "eu-north-1",
   credentials: {
-    accessKeyId: "",
-    secretAccessKey: "",
+    accessKeyId: "AKIAW3MEDQL6WFTCH7O7",
+    secretAccessKey: "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",
   },
 });
 
