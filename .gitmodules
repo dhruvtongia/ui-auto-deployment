@@ -1,3 +1,0 @@
-[submodule "project-build-service"]
-	path = project-build-service
-	url = ./project-build-service
