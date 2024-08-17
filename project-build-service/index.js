@@ -4,15 +4,18 @@ const path = require("path");
 const fs = require("fs");
 const { PutObjectCommand, S3Client } = require("@aws-sdk/client-s3");
 const mime = require("mime-types");
-
+const Redis = require("ioredis");
 require("dotenv").config();
 
+const redis = new Redis(
+  "rediss://default:AVNS_YTIjVViZIN3Yr5XO7DU@redis-dhruv-vercel-clone-redis.a.aivencloud.com:28074"
+);
 const git = simpleGit().clean(simpleGit.CleanOptions.FORCE);
 const s3Client = new S3Client({
   region: "eu-north-1",
   credentials: {
-    accessKeyId: "AKIAW3MEDQL66SIV25XA",
-    secretAccessKey: "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",
+    accessKeyId: "",
+    secretAccessKey: "",
   },
 });
 
@@ -65,6 +68,18 @@ const getSourceCode = async () => {
         }
       }
     }
+
+    console.log("INFO-> successfully uploaded all the files to S3");
+    redis.publish(
+      "deployment-status",
+      JSON.stringify({
+        status: "deployed",
+        id: process.env.PROJECT_ID,
+      })
+    );
+    redis.quit(() => {
+      console.log("closing the redis connection.");
+    });
   });
 };
 
